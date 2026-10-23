@@ -66,6 +66,10 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 - Follow good security practices
 - Make sure to explicitly set the workflow permissions
 - Add comments to document what tasks are being performed
+- The Jira sync is authored in `.github/workflows/jira-to-github.md`; regenerate
+  its `.lock.yml` with `gh aw compile jira-to-github` using gh-aw v0.91.1 after edits.
+  Keep Jira MCP tools read-only, GitHub writes in repository-scoped safe outputs,
+  and GitHub-only notes outside the `jira-to-github` managed island.
 
 ## npm Commands
 
