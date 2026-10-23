@@ -77,6 +77,17 @@ with the same matching rules. Omitting the filters preserves the original full l
 `{ id, name }` options, including categories without games, just like the existing
 publisher helper.
 
+## Mermaid diagrams
+
+Use the **diagram** Copilot agent to create code-grounded Mermaid diagrams.
+The [mermaid-cli skill](.github/skills/mermaid-cli/SKILL.md), also available as
+`/mermaid-cli`, provides local rendering and syntax validation with the official
+`@mermaid-js/mermaid-cli` executable (`mmdc`), plus SVG, PNG, and PDF export.
+It uses an existing CLI or, with explicit approval, a pinned npm-cache invocation;
+it does not add application dependencies. Rendering requires a compatible
+Puppeteer/Chromium environment. See the skill for commands, prerequisites, and
+failure handling.
+
 ## Running tests
 
 ```bash

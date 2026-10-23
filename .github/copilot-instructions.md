@@ -77,6 +77,11 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
   Keep Jira MCP tools read-only, GitHub writes in repository-scoped safe outputs,
   and GitHub-only notes outside the `jira-to-github` managed island.
 
+## Mermaid diagram documentation
+
+- Use the `diagram` agent for code-grounded diagrams and the [mermaid-cli skill](skills/mermaid-cli/SKILL.md) for local rendering, syntax validation, and image export.
+- Keep diagram tooling separate from application dependencies; downloads require explicit approval. Report missing CLI/browser prerequisites and distinguish CLI rendering from architectural and visual verification.
+
 ## npm Commands
 
 - Development commands are defined in `package.json`. They run Astro for the site and TypeScript tasks in `db/` for database setup.
