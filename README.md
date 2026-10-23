@@ -57,6 +57,10 @@ npm run db:export     # write the seeded catalog to db/catalog.json
 > [!NOTE]
 > Seeding is idempotent — it skips games that already exist (matched by title) rather than reconciling changed rows. CI always starts from a clean database, so it reflects `games.csv` exactly. Locally, if you edit or remove rows in `games.csv`, delete `tailspin.db` and re-run `npm run db:setup` to fully regenerate.
 
+The injectable `getAllPublishers(db)` helper in `src/lib/publishers.ts` returns
+all publishers as `{ id, name }` objects ordered alphabetically by name, including
+publishers without games. It returns an empty array when no publishers exist.
+
 ## Running tests
 
 ```bash
