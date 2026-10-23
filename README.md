@@ -109,6 +109,41 @@ npm run typecheck:all    # both of the above
 > [!NOTE]
 > The native compiler is used only for type checking (`--noEmit`); the site is still built by `astro build` (Vite/esbuild). The classic `typescript` package stays on v6 until `typescript-eslint` and `@astrojs/check` support the native API (~TS 7.1); a Dependabot `ignore` in `.github/dependabot.yml` holds the classic `typescript@7` bump until then.
 
+## Copilot issue plans
+
+`.github/workflows/issue-plan.md` uses GitHub Copilot to propose a solution
+whenever an issue is opened, including issues from external contributors.
+It reads the issue, relevant repository instructions, source, and tests, then
+posts a Markdown comment headed **plan.md** with the recommended approach,
+implementation steps, validation, and open questions. The plan stays beside
+the issue rather than creating a file, branch, or pull request. Review it before
+implementing; the workflow does not change code or run the proposed checks.
+
+Enable GitHub Actions and Copilot inference for agentic workflows in the
+repository's account/organization, then land both `issue-plan.md` and its
+generated `issue-plan.lock.yml` on the default branch. Copilot authenticates
+with `copilot-requests: write` on the Actions token; no Copilot PAT is needed.
+The agent has read-only repository access, no checkout or shell access, and can
+publish at most one comment on the triggering issue through a separate trusted
+safe-output job. Rerunning the Actions run replaces the workflow's existing
+plan comment instead of adding duplicates. Closed issues are skipped.
+Failures and incomplete runs are reported in Actions diagnostics rather than
+creating extra issues; failed threat detection blocks publication.
+
+Each new issue can consume Actions minutes and Copilot usage, including issues
+opened by users without write access. GitHub suppresses workflow triggers for
+issues created using another workflow's `GITHUB_TOKEN`, so issues created by
+the Jira sync do not automatically trigger this planner. Use an approved GitHub
+App token for the creating workflow if chaining is required. Disable **Copilot
+issue plan** in Actions to stop automatic planning.
+
+After editing the Markdown source, regenerate and commit its lock file using
+gh-aw v0.93.2:
+
+```bash
+gh aw compile issue-plan
+```
+
 ## Jira to GitHub issue sync
 `.github/workflows/jira-to-github.md` is a GitHub agentic workflow that reads
 Jira through MCP and creates or updates issues in `hmedzk/tailspintoys-contoso`.
