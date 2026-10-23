@@ -61,6 +61,22 @@ The injectable `getAllPublishers(db)` helper in `src/lib/publishers.ts` returns
 all publishers as `{ id, name }` objects ordered alphabetically by name, including
 publishers without games. It returns an empty array when no publishers exist.
 
+## Catalog filtering
+
+On the home page, select one or more category checkboxes and/or a publisher.
+Selected categories match **any** of those categories; the publisher narrows that
+selection further. With no categories selected, all categories are included.
+**Clear filters** restores the full catalog. Results update immediately with an
+announced result count and a helpful empty state when nothing matches.
+
+The site remains fully static: a small Astro script filters the prerendered cards
+without network requests. Without JavaScript, the complete catalog remains available.
+Build-time consumers can use `getAllGames(db, { categoryIds: [1, 2], publisherId: 3 })`
+with the same matching rules. Omitting the filters preserves the original full listing.
+`getAllCategories(db)` in `src/lib/categories.ts` provides alphabetically ordered
+`{ id, name }` options, including categories without games, just like the existing
+publisher helper.
+
 ## Running tests
 
 ```bash
@@ -92,6 +108,77 @@ npm run typecheck:all    # both of the above
 
 > [!NOTE]
 > The native compiler is used only for type checking (`--noEmit`); the site is still built by `astro build` (Vite/esbuild). The classic `typescript` package stays on v6 until `typescript-eslint` and `@astrojs/check` support the native API (~TS 7.1); a Dependabot `ignore` in `.github/dependabot.yml` holds the classic `typescript@7` bump until then.
+
+## Jira to GitHub issue sync
+`.github/workflows/jira-to-github.md` is a GitHub agentic workflow that reads
+Jira through MCP and creates or updates issues in `hmedzk/tailspintoys-contoso`.
+It targets **every five minutes** and supports **Run workflow** for manual runs.
+GitHub Actions does not support a one-minute schedule; scheduled runs can be
+delayed or dropped under load, and runs longer than five minutes are serialized.
+A strict one-minute interval requires a separately hosted scheduler/worker.
+### Required setup
+1. Confirm that copying the selected project's Jira descriptions into this
+   repository is permitted, especially if the repository is public. Grant a
+   dedicated Atlassian service account read-only access to that project and
+   enable your organization's remote MCP access. This workflow uses the official
+   `https://mcp.atlassian.com/v1/mcp` endpoint with non-interactive service-account
+   bearer authentication, not browser OAuth. Confirm endpoint and authentication
+   compatibility before enabling it.
+2. In **Settings > Secrets and variables > Actions**, add the repository secret
+   `ATLASSIAN_SERVICE_ACCOUNT_API_KEY`. Never put credentials in workflow files,
+   issue bodies, or command-line arguments.
+3. Add repository variables `JIRA_PROJECT_KEY` (for example, `TOYS`) and
+   `JIRA_CLOUD_ID` (the Jira site's cloud UUID, not its project ID or hostname).
+   Find the UUID in your Atlassian site administration or the site's
+   `https://YOUR-SITE.atlassian.net/_edge/tenant_info` response.
+4. Enable GitHub Actions and Copilot inference for agentic workflows in the
+   repository's account/organization. The workflow uses
+   `copilot-requests: write` with the Actions token; no Copilot PAT is needed.
+   The agent remains read-only; separate trusted jobs publish issue changes and
+   workflow diagnostics.
+5. Commit both the Markdown source and compiled `jira-to-github.lock.yml` to
+   the default branch to activate the schedule. Run it manually first and inspect
+   the Actions logs and resulting issues. Missing configuration fails explicitly;
+   setup here does not establish or verify a live Jira connection.
+The query selects the configured project and exact status name `To Do`, not all
+statuses in the To Do category. Summaries become `[Jira] KEY: Summary` titles;
+descriptions, source links, and Jira timestamps live in a managed body section.
+Titles are capped at the safe-output tool's 128-character limit. Atlassian Cloud
+links are allowed in published content; other external URLs may be redacted by
+the workflow's sanitizer.
+Jira comments and attachments are not copied. A cloud-ID/key marker links each
+source item to its issue across runs, including closed issues. GitHub issue
+states never change, and items leaving To Do are left untouched.
+Add GitHub-only notes **outside** the managed section (under `### GitHub notes`).
+Content inside that section and the issue title are Jira-owned. To link an
+existing issue manually, prefix its title with `[Jira] ` and add the standalone
+line `Jira sync identity: CLOUD_ID:ISSUE_KEY` to its body. The workflow inserts
+its managed section without replacing existing notes. This identity stays
+outside the `<!-- gh-aw-island-start:jira-to-github -->` /
+`<!-- gh-aw-island-end:jira-to-github -->` pair inserted by the safe-output
+handler. Do not put the identity in an HTML comment: the sanitizer removes
+agent-authored comments. Duplicate identities or malformed/duplicated island
+markers are reported and skipped. If both island markers are absent (including
+an interrupted creation), the next run initializes the section without creating
+another issue.
+Each run permits at most 25 creations and 25 existing-issue updates, plus up to
+25 initialization updates for new issues; deferred items are reported
+and reconsidered on later runs. This is an AI-driven, best-effort reconciliation,
+not a transactional mirror. Monitor conflicts, failures, backlog, Actions minutes,
+and Copilot usage: a five-minute schedule can start **288 runs per day**.
+Disable **Jira To Do sync** in Actions to stop polling.
+After editing the workflow, regenerate its lock file with the matching compiler:
+```bash
+gh extension install github/gh-aw --pin v0.91.1
+gh aw compile jira-to-github
+```
+For a different approved Atlassian MCP endpoint, edit `tools.jira.url` to its
+literal HTTPS URL and recompile. For account API-token authentication instead,
+use the compiler's `tools.jira.auth.type: api-token` configuration with separate
+email/token repository secrets; recompile before running. Other MCP server
+implementations may have different tools and require an adapted workflow.
+If adapting this workflow to another repository, also change both safe-output
+`target-repo` values and the repository named in its instructions before compiling.
 
 ## License 
 
