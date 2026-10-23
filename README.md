@@ -4,6 +4,8 @@ Tailspin Toys is a crowdfunding platform for games with a developer theme. The p
 
 ## Architecture
 
+See the [high-level architecture diagram source](docs/diagrams/architecture.mmd) (local SVG rendering pending Mermaid CLI availability).
+
 - **Astro 7** — pages, layouts, components, and routing. `output: 'static'`, so the whole site is prerendered to HTML at build time.
 - **Drizzle ORM + Node SQLite** — the data layer. The schema lives in `db/schema.ts`; data is seeded from `db/games.csv`. Migrations are managed with `drizzle-kit`.
 - **Tailwind CSS v4** — styling via utility classes (dark theme).
@@ -11,6 +13,36 @@ Tailspin Toys is a crowdfunding platform for games with a developer theme. The p
 - **Playwright** — end-to-end tests run against the built static site.
 
 Development commands are defined in `package.json`: npm runs Astro for the dev server, static build, and preview. The `predev` and `prebuild` npm hooks run the TypeScript database migration and seed tasks in `db/`, writing to the gitignored `tailspin.db` file.
+
+## Repository diagrams
+
+Select the **Diagram** agent in VS Code Chat to create architecture, data-flow,
+sequence, or database diagrams from the current code. Its instructions live in
+[diagram.agent.md](.github/agents/diagram.agent.md); the
+[mermaid-cli skill](.github/skills/mermaid-cli/SKILL.md) can also be invoked with
+`/mermaid-cli` to render existing Mermaid source.
+
+Diagrams default to editable `.mmd` source and rendered `.svg` files together in
+`docs/diagrams/`. Rendering uses Mermaid CLI locally; repository content is not
+sent to a hosted renderer. Mermaid CLI is optional and is not installed by
+`npm ci`. To install it yourself:
+
+```bash
+npm install --global @mermaid-js/mermaid-cli
+```
+
+Then render a saved diagram (replace the example paths with absolute paths):
+
+```bash
+mmdc --input "/absolute/path/to/repo/docs/diagrams/architecture.mmd" \
+  --output "/absolute/path/to/repo/docs/diagrams/architecture.svg" \
+  --theme dark --backgroundColor transparent
+```
+
+Mermaid CLI requires a compatible headless browser. The skill checks for an
+existing CLI and reports missing CLI/browser prerequisites rather than silently
+installing packages or disabling browser sandboxing. PNG and PDF output are also
+supported by changing the output extension.
 
 ## Using this template
 

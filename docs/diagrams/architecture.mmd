@@ -1,0 +1,28 @@
+%% Tailspin Toys: high-level current application architecture.
+%% Sources: package.json, astro.config.mjs, db/migrate.ts, db/seed.ts,
+%% src/lib/db.ts, src/lib/games.ts, src/pages/, src/components/Header.astro.
+%% Arrows show preparation order, data flow, or static asset delivery.
+flowchart TB
+    subgraph build_time["Build time — local Node.js process"]
+        catalog["Catalog source<br/>db/games.csv"]
+        setup["Database setup<br/>Migrate, then seed"]
+        database[("Local SQLite<br/>tailspin.db")]
+        data_access["Data-access helpers<br/>Drizzle ORM + Node SQLite"]
+        astro_build["Astro static build<br/>Pages, layouts and components<br/>Tailwind CSS"]
+
+        catalog -->|"Seed input"| setup
+        setup -->|"Prepare before Astro build"| database
+        database -->|"Catalog data"| data_access
+        data_access -->|"Build-time page queries"| astro_build
+    end
+
+    subgraph static_output["Generated static site — dist/"]
+        site["HTML, CSS, JavaScript and assets<br/>Home, game details, About and 404"]
+    end
+
+    subgraph browser_runtime["Browser — no live application API or database connection"]
+        browser["Browse prerendered pages<br/>Client-side navigation menu toggle"]
+    end
+
+    astro_build -->|"Prerender and bundle"| site
+    site -->|"Serve static files"| browser

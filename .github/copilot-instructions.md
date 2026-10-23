@@ -67,6 +67,15 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 - Make sure to explicitly set the workflow permissions
 - Add comments to document what tasks are being performed
 
+## Repository diagrams
+
+- Use the `.github/agents/diagram.agent.md` custom agent for repository diagrams.
+- Load `.github/skills/mermaid-cli/SKILL.md` when rendering or validating Mermaid
+  with the local `mmdc` CLI. Do not install packages or browsers without approval.
+- Keep editable `.mmd` source and rendered output in `docs/diagrams/` by default.
+- Verify diagrams against current code, distinguish build-time data access from
+  browser behavior, and report rendering failures explicitly.
+
 ## npm Commands
 
 - Development commands are defined in `package.json`. They run Astro for the site and TypeScript tasks in `db/` for database setup.
