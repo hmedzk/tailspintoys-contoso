@@ -61,6 +61,22 @@ The injectable `getAllPublishers(db)` helper in `src/lib/publishers.ts` returns
 all publishers as `{ id, name }` objects ordered alphabetically by name, including
 publishers without games. It returns an empty array when no publishers exist.
 
+## Catalog filtering
+
+On the home page, select one or more category checkboxes and/or a publisher.
+Selected categories match **any** of those categories; the publisher narrows that
+selection further. With no categories selected, all categories are included.
+**Clear filters** restores the full catalog. Results update immediately with an
+announced result count and a helpful empty state when nothing matches.
+
+The site remains fully static: a small Astro script filters the prerendered cards
+without network requests. Without JavaScript, the complete catalog remains available.
+Build-time consumers can use `getAllGames(db, { categoryIds: [1, 2], publisherId: 3 })`
+with the same matching rules. Omitting the filters preserves the original full listing.
+`getAllCategories(db)` in `src/lib/categories.ts` provides alphabetically ordered
+`{ id, name }` options, including categories without games, just like the existing
+publisher helper.
+
 ## Running tests
 
 ```bash

@@ -92,7 +92,7 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 The application lives at the repository root:
 
 - `db/`: Drizzle schema, migrations, transforms, seed, and `games.csv`
-- `src/lib/`: Node SQLite client (`db.ts`) and data-access helpers (`games.ts`, `publishers.ts`, `ratings.ts`)
+- `src/lib/`: Node SQLite client (`db.ts`) and data-access helpers (`games.ts`, `categories.ts`, `publishers.ts`, `ratings.ts`)
 - `src/components/`: reusable `.astro` components
 - `src/layouts/`: Astro layout templates
 - `src/pages/`: Astro page routes (`index.astro` listing, `game/[id].astro`, `404.astro`, `about.astro`)
@@ -101,3 +101,10 @@ The application lives at the repository root:
 - `e2e-tests/`: Playwright E2E tests (home, games, accessibility)
 - `drizzle.config.ts`, `vitest.config.ts`, `astro.config.mjs`, `playwright.config.ts`: tooling config
 - `README.md`: Project documentation
+
+### Catalog filtering
+
+- `getAllGames(db, filters?)` accepts optional `categoryIds` (OR matching) and `publisherId` (AND with categories). Empty category arrays leave categories unrestricted.
+- `getAllCategories(db)` and the existing `getAllPublishers(db)` supply alphabetically ordered filter options, including entries without games.
+- The home page filters prerendered cards using a scoped Astro script; keep the site static and the full catalog available without JavaScript.
+- Keep browser filtering semantics consistent with the data helper and announce result counts with a live status.
