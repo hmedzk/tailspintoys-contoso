@@ -2,7 +2,7 @@
 import Menu from '../assets/icons/menu.svg';
 ---
 
-<header class="bg-blue-500 dark:bg-blue-700 text-white p-4 shadow-md transition-colors duration-300">
+<header class="bg-blue-600 dark:bg-blue-700 text-white p-4 shadow-md transition-colors duration-300">
   <div class="container mx-auto flex justify-between items-center pl-4 pr-4">
     <div class="flex items-center">
       <div class="relative group">
@@ -18,10 +18,42 @@ import Menu from '../assets/icons/menu.svg';
       </div>
       <div class="text-xl font-bold"><a href="/" class="hover:underline">Tailspin Toys</a></div>
     </div>
+    <button
+      id="theme-toggle"
+      type="button"
+      class="rounded-lg border border-white/60 px-3 py-2 text-sm font-medium hover:bg-white/10 focus:ring-2 focus:ring-white focus:outline-none"
+      aria-label="Switch to light mode"
+      aria-pressed="true"
+      data-testid="theme-toggle"
+    >
+      Dark mode
+    </button>
   </div>
 </header>
 
 <script>
+  const themeToggle = document.getElementById('theme-toggle');
+
+  if (themeToggle instanceof HTMLButtonElement) {
+    const updateThemeButton = (): void => {
+      const isDark = document.documentElement.classList.contains('dark');
+      themeToggle.setAttribute('aria-pressed', String(isDark));
+      themeToggle.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} mode`);
+      themeToggle.textContent = `${isDark ? 'Dark' : 'Light'} mode`;
+    };
+
+    updateThemeButton();
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('tailspin-theme', isDark ? 'dark' : 'light');
+      } catch {
+        // Theme switching remains available for the current page.
+      }
+      updateThemeButton();
+    });
+  }
+
   // Toggle menu visibility when hamburger is clicked
   const menuToggle = document.getElementById('menu-toggle');
   const menu = document.getElementById('menu');
