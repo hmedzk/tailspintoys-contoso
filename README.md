@@ -230,3 +230,5 @@ This project is provided as-is, and may be updated over time. If you have questi
 ## Disclaimer
 
 This app is not intended for use in a production environment, nor is it built as an example of what a production app should look like.
+
+HEHE Vibes Only
