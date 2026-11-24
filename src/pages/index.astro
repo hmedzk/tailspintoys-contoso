@@ -25,22 +25,22 @@ const publishers = await getAllPublishers(db);
     />
 
     <div>
-      <h2 class="text-2xl font-medium mb-6 text-slate-100">Featured Games</h2>
+      <h2 class="text-2xl font-medium mb-6 text-slate-900 dark:text-slate-100">Featured Games</h2>
 
       {games.length === 0 ? (
         <EmptyState text="No games available at the moment." />
       ) : (
         <>
           <form id="game-filters" aria-label="Filter games" hidden
-            class="mb-6 rounded-xl border border-slate-700 bg-slate-800 p-6">
+            class="mb-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6">
             <fieldset aria-describedby="category-filter-help">
-              <legend class="font-semibold text-slate-100">Categories</legend>
-              <p id="category-filter-help" class="mt-2 text-sm text-slate-300">
+              <legend class="font-semibold text-slate-900 dark:text-slate-100">Categories</legend>
+              <p id="category-filter-help" class="mt-2 text-sm text-slate-600 dark:text-slate-300">
                 Choose one or more categories. Games matching any selected category are shown.
               </p>
               <div class="mt-3 flex flex-wrap gap-4">
                 {categories.map((category) => (
-                  <label class="flex items-center gap-2 text-slate-200">
+                  <label class="flex items-center gap-2 text-slate-800 dark:text-slate-200">
                     <input type="checkbox" name="category" value={category.id}
                       data-testid={`category-filter-${category.id}`}
                       aria-controls="games-grid"
@@ -52,22 +52,22 @@ const publishers = await getAllPublishers(db);
             </fieldset>
             <div class="mt-5 flex flex-col items-start gap-4 sm:flex-row sm:items-end">
               <div class="w-full sm:w-auto">
-                <label for="publisher-filter" class="mb-2 block font-semibold text-slate-100">Publisher</label>
+                <label for="publisher-filter" class="mb-2 block font-semibold text-slate-900 dark:text-slate-100">Publisher</label>
                 <select id="publisher-filter" name="publisher" data-testid="publisher-filter"
                   aria-controls="games-grid"
-                  class="w-full rounded-lg border border-slate-600 bg-slate-900 p-2 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-2 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                   <option value="">All publishers</option>
                   {publishers.map((publisher) => <option value={publisher.id}>{publisher.name}</option>)}
                 </select>
               </div>
               <button type="reset" data-testid="clear-filters"
-                class="rounded-lg border border-slate-600 px-4 py-2 text-slate-100 hover:bg-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                class="rounded-lg border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 Clear filters
               </button>
             </div>
           </form>
           <p id="filter-results" role="status" aria-live="polite" aria-atomic="true"
-            data-testid="filter-results" class="mb-4 text-slate-300">
+            data-testid="filter-results" class="mb-4 text-slate-600 dark:text-slate-300">
             {games.length} {games.length === 1 ? 'game' : 'games'} shown
           </p>
           <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="games-grid">
